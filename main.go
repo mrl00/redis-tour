@@ -60,7 +60,7 @@ func main() {
 		case "4":
 			demos.RunSets(ctx, rdb)
 		case "5":
-			fmt.Println("🔜  Em breve — Sorted Sets & Leaderboard")
+			demos.RunSortedSets(ctx, rdb)
 		case "6":
 			fmt.Println("🔜  Em breve — Cache com TTL")
 		case "7":
