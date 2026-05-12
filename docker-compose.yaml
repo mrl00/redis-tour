@@ -1,7 +1,7 @@
 services:
   redis:
     image: redis:7.2-alpine
-    container_name: redis-tour
+    container_name: redis-example
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -18,7 +18,7 @@ services:
 
   redis-insight:
     image: redis/redisinsight:latest
-    container_name: redis-tour-ui
+    container_name: redis-example-ui
     restart: unless-stopped
     ports:
       - "5540:5540"
