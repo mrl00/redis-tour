@@ -62,11 +62,11 @@ func main() {
 		case "5":
 			demos.RunSortedSets(ctx, rdb)
 		case "6":
-			fmt.Println("🔜  Em breve — Cache com TTL")
+			demos.RunCache(ctx, rdb)
 		case "7":
-			fmt.Println("🔜  Em breve — Rate Limiter")
+			demos.RunRateLimit(ctx, rdb)
 		case "8":
-			fmt.Println("🔜  Em breve — Session Store")
+			demos.RunSessionStore(ctx, rdb)
 		case "0":
 			fmt.Println("Até mais! 👋")
 			return

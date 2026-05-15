@@ -19,10 +19,10 @@ docker compose up -d
 
 Isso sobe dois containers:
 
-| Container       | Porta  | Descrição                  |
-| --------------- | ------ | -------------------------- |
-| `redis-tour`    | `6379` | Redis 7.2 (Alpine)         |
-| `redis-tour-ui` | `5540` | RedisInsight — GUI oficial |
+| Container        | Porta  | Descrição                              |
+|------------------|--------|----------------------------------------|
+| `redis-tour`     | `6379` | Redis 7.2 (Alpine)                     |
+| `redis-tour-ui`  | `5540` | RedisInsight — GUI oficial             |
 
 Acesse o RedisInsight em [http://localhost:5540](http://localhost:5540) para visualizar as chaves enquanto roda as demos.
 
@@ -83,7 +83,7 @@ redis-tour/
     ├── hashes.go
     ├── sets.go
     ├── sorted_sets.go
-    ├── usecases.go   # cache, rate limiter e session store (em breve)
+    └── usecases.go   # cache com TTL, rate limiter e session store
 ```
 
 ---
@@ -91,62 +91,67 @@ redis-tour/
 ## O que cada demo cobre
 
 ### [1] Strings & contadores
-
-| Comando                      | O que demonstra                                               |
-| ---------------------------- | ------------------------------------------------------------- |
-| `SET` / `GET`                | Armazenar e recuperar valores, sobrescrita, chave inexistente |
-| `INCR` / `INCRBY` / `DECRBY` | Contador atômico simulando visitas                            |
-| `SET ... EX` + `TTL`         | Expiração automática com monitoramento do TTL em tempo real   |
-| `SET ... NX EX`              | Lock distribuído simples com dois workers competindo          |
+| Comando | O que demonstra |
+|---|---|
+| `SET` / `GET` | Armazenar e recuperar valores, sobrescrita, chave inexistente |
+| `INCR` / `INCRBY` / `DECRBY` | Contador atômico simulando visitas |
+| `SET ... EX` + `TTL` | Expiração automática com monitoramento do TTL em tempo real |
+| `SET ... NX EX` | Lock distribuído simples com dois workers competindo |
 
 ### [2] Lists & filas
-
-| Comando                     | O que demonstra                                             |
-| --------------------------- | ----------------------------------------------------------- |
-| `RPUSH` / `LRANGE` / `LLEN` | Montar e inspecionar uma fila de e-mails                    |
-| `LPOP` / `RPOP`             | Consumir elementos em ordem FIFO e LIFO                     |
-| `LPUSH` + `LPOP`            | List como pilha — histórico de navegação com botão "voltar" |
-| `BLPOP`                     | Worker bloqueante aguardando jobs chegarem na fila          |
+| Comando | O que demonstra |
+|---|---|
+| `RPUSH` / `LRANGE` / `LLEN` | Montar e inspecionar uma fila de e-mails |
+| `LPOP` / `RPOP` | Consumir elementos em ordem FIFO e LIFO |
+| `LPUSH` + `LPOP` | List como pilha — histórico de navegação com botão "voltar" |
+| `BLPOP` | Worker bloqueante aguardando jobs chegarem na fila |
 
 ### [3] Hashes & objetos
-
-| Comando                     | O que demonstra                                         |
-| --------------------------- | ------------------------------------------------------- |
-| `HSET` / `HGET` / `HGETALL` | Criar e ler perfil de usuário com múltiplos campos      |
-| `HKEYS` / `HVALS` / `HLEN`  | Inspecionar estrutura do hash                           |
-| `HMGET`                     | Ler múltiplos campos em uma única round-trip            |
-| `HINCRBY`                   | Sistema de pontos — placar ao vivo entre dois jogadores |
-| `HDEL` / `HEXISTS`          | Remover campos individualmente e verificar existência   |
+| Comando | O que demonstra |
+|---|---|
+| `HSET` / `HGET` / `HGETALL` | Criar e ler perfil de usuário com múltiplos campos |
+| `HKEYS` / `HVALS` / `HLEN` | Inspecionar estrutura do hash |
+| `HMGET` | Ler múltiplos campos em uma única round-trip |
+| `HINCRBY` | Sistema de pontos — placar ao vivo entre dois jogadores |
+| `HDEL` / `HEXISTS` | Remover campos individualmente e verificar existência |
 
 ### [4] Sets & conjuntos
-
-| Comando                       | O que demonstra                                      |
-| ----------------------------- | ---------------------------------------------------- |
-| `SADD` / `SMEMBERS` / `SCARD` | Criar conjuntos de tags, ignorar duplicatas          |
-| `SISMEMBER` / `SMISMEMBER`    | Lista negra de IPs — verificar pertencimento em O(1) |
-| `SINTER` / `SUNION` / `SDIFF` | Tópicos em comum entre usuários, `SINTERSTORE`       |
-| `SRANDMEMBER` / `SPOP`        | Amostragem e sorteio de vencedores sem repetição     |
+| Comando | O que demonstra |
+|---|---|
+| `SADD` / `SMEMBERS` / `SCARD` | Criar conjuntos de tags, ignorar duplicatas |
+| `SISMEMBER` / `SMISMEMBER` | Lista negra de IPs — verificar pertencimento em O(1) |
+| `SINTER` / `SUNION` / `SDIFF` | Tópicos em comum entre usuários, `SINTERSTORE` |
+| `SRANDMEMBER` / `SPOP` | Amostragem e sorteio de vencedores sem repetição |
 
 ### [5] Sorted Sets & leaderboard
+| Comando | O que demonstra |
+|---|---|
+| `ZADD` / `ZREVRANGE` / `ZCARD` | Leaderboard com 7 jogadores e desempate lexicográfico |
+| `ZSCORE` / `ZREVRANK` | Consultar score e posição de um jogador específico |
+| `ZINCRBY` | Partida ao vivo — kills, penalidades e MVP reordenam o ranking |
+| `ZRANGEBYSCORE` / `ZCOUNT` / `ZREMRANGEBYSCORE` | Filtrar por faixa, contar e rebaixar jogadores |
 
-| Comando                                         | O que demonstra                                                |
-| ----------------------------------------------- | -------------------------------------------------------------- |
-| `ZADD` / `ZREVRANGE` / `ZCARD`                  | Leaderboard com 7 jogadores e desempate lexicográfico          |
-| `ZSCORE` / `ZREVRANK`                           | Consultar score e posição de um jogador específico             |
-| `ZINCRBY`                                       | Partida ao vivo — kills, penalidades e MVP reordenam o ranking |
-| `ZRANGEBYSCORE` / `ZCOUNT` / `ZREMRANGEBYSCORE` | Filtrar por faixa, contar e rebaixar jogadores                 |
+### [6] Cache com TTL
+| Comando | O que demonstra |
+|---|---|
+| `GET` → miss → `SET ... EX` | Padrão cache-aside: busca no "banco" (250ms), armazena no Redis |
+| `GET` → hit | Segunda e terceira requisições retornam em microssegundos |
+| `TTL` com monitoramento | TTL curto de 3s observado em tempo real até expirar |
+| Repovoamento automático | Miss após expiração busca dados frescos e repovoaa cache |
 
-### [6] Cache com TTL _(em breve)_
+### [7] Rate Limiter
+| Comando | O que demonstra |
+|---|---|
+| `INCR` + `EXPIRE` | Fixed window — 8 requisições com limite de 5, bloqueadas mostram TTL restante |
+| `ZADD` + `ZREMRANGEBYSCORE` + `ZCARD` | Sliding window — janela móvel de 10s com timestamps, sem problema de rajada |
 
-Simula uma busca lenta no banco (sleep), armazena resultado no Redis com TTL e demonstra o ganho de latência no cache hit.
-
-### [7] Rate limiter _(em breve)_
-
-`INCR` + `EXPIRE` limitando requisições por IP em janela de tempo, com loop de 12 requisições mostrando o bloqueio.
-
-### [8] Session store _(em breve)_
-
-Criação de sessão com token UUID via `HSET`, expiração com `EXPIRE`, leitura com `HGETALL` e logout com `DEL`.
+### [8] Session Store
+| Comando | O que demonstra |
+|---|---|
+| `HSET` + `EXPIRE` | Login — cria sessão com 6 campos e TTL de inatividade |
+| `EXISTS` + `HGETALL` + `HGET` | Requisições autenticadas — valida token, lê dados, verifica role |
+| `EXPIRE` (renovação) | Sliding expiration — TTL resetado a cada requisição autenticada |
+| `DEL` | Logout — remove sessão imediatamente; token posterior retorna empty |
 
 ---
 
@@ -179,4 +184,3 @@ docker compose down -v
 - [Documentação oficial do Redis](https://redis.io/docs/)
 - [go-redis — documentação](https://redis.uptrace.dev/)
 - [Redis University (cursos gratuitos)](https://university.redis.io/)
-
