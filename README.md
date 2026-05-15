@@ -11,18 +11,19 @@ Aplicação de linha de comando que demonstra os principais conceitos do Redis n
 
 ---
 
-## Subindo o Redis
+## Subindo os serviços
 
 ```bash
-docker compose up -d
+docker compose up --build
 ```
 
-Isso sobe dois containers:
+Isso sobe três containers:
 
 | Container        | Porta  | Descrição                              |
 |------------------|--------|----------------------------------------|
 | `redis-tour`     | `6379` | Redis 7.2 (Alpine)                     |
 | `redis-tour-ui`  | `5540` | RedisInsight — GUI oficial             |
+| `redis-tour-app` | —      | A aplicação Go (aguarda Redis healthy) |
 
 Acesse o RedisInsight em [http://localhost:5540](http://localhost:5540) para visualizar as chaves enquanto roda as demos.
 
@@ -37,6 +38,15 @@ docker compose exec redis redis-cli PING
 ---
 
 ## Rodando o projeto
+
+**Via Docker (recomendado):**
+
+```bash
+docker compose up --build
+docker compose attach redis-tour-app   # abre o menu interativo
+```
+
+**Localmente (Redis já deve estar no ar):**
 
 ```bash
 go mod tidy
