@@ -6,24 +6,28 @@ Aplicação de linha de comando que demonstra os principais conceitos do Redis n
 
 ## Pré-requisitos
 
-- [Go 1.22+](https://go.dev/dl/)
+- [Go 1.26+](https://go.dev/dl/)
 - [Docker](https://docs.docker.com/get-docker/) e Docker Compose
+- Make
 
 ---
 
-## Subindo os serviços
+## Rodando o projeto
 
 ```bash
-docker compose up --build
+make
 ```
 
-Isso sobe três containers:
+Isso sobe o Redis via Docker Compose, aguarda o healthcheck passar e executa a aplicação.
 
-| Container        | Porta  | Descrição                              |
-|------------------|--------|----------------------------------------|
-| `redis-tour`     | `6379` | Redis 7.2 (Alpine)                     |
-| `redis-tour-ui`  | `5540` | RedisInsight — GUI oficial             |
-| `redis-tour-app` | —      | A aplicação Go (aguarda Redis healthy) |
+---
+
+## Serviços Docker
+
+| Container       | Porta  | Descrição                  |
+|-----------------|--------|----------------------------|
+| `redis-tour`    | `6379` | Redis 7.2 (Alpine)         |
+| `redis-tour-ui` | `5540` | RedisInsight — GUI oficial |
 
 Acesse o RedisInsight em [http://localhost:5540](http://localhost:5540) para visualizar as chaves enquanto roda as demos.
 
@@ -37,21 +41,16 @@ docker compose exec redis redis-cli PING
 
 ---
 
-## Rodando o projeto
-
-**Via Docker (recomendado):**
+## Comandos Make
 
 ```bash
-docker compose up --build
-docker compose attach redis-tour-app   # abre o menu interativo
+make        # sobe o Redis e executa a aplicação
+make down   # para os containers
+make logs   # acompanha os logs do Redis em tempo real
+make clean  # para os containers e apaga o volume de dados
 ```
 
-**Localmente (Redis já deve estar no ar):**
-
-```bash
-go mod tidy
-go run .
-```
+---
 
 Você verá o menu:
 
@@ -85,6 +84,7 @@ Ao final de cada demo o programa lista todas as chaves criadas no Redis e pergun
 ```
 redis-tour/
 ├── docker-compose.yml
+├── Makefile
 ├── go.mod
 ├── main.go           # conexão, menu e pós-demo (KEYS + FLUSHALL)
 └── demos/
